@@ -3,21 +3,22 @@
 This project has the focus on manage user profiles on Windows Operation System.
 There are no commands available to manage user profile easilly, and you can use it to achieve that goal.
 
-Basically, the following call is used to delete profiles:
+Basically, the following function is used to delete profiles:
 
 ```cs
 [DllImport("userenv.dll", CharSet = CharSet.Unicode, ExactSpelling = false, SetLastError = true)]
 private static extern bool DeleteProfile(string sidString, string profilePath, string computerName);
-
-Additional functions related to user profiles were implemented aiming in to make easier all those tasks.
 ```
 
+Additional functions related to user profiles were implemented aiming in to make easier all those tasks.
+
 ## Using this script
-You should call it like "WindowsProfileManager.exe action userNameOrSID [printType]" (as shown when you call file without any parameter):
+To view instructions, call WindowsProfileManager.exe withou any parameter. You will see an output like this:
 
-
-*Usage: WindowsProfilesManager.exe action [printType]*
-  *action [required]:* one of the following
+```
+==============================================================================
+Usage: WindowsProfilesManager.exe action [printType]
+  action [required]: one of the following
      GetUser userNameOrSID [printType]
      GetProfile userNameOrSID [printType]
      ListProfiles [printType]
@@ -26,8 +27,9 @@ You should call it like "WindowsProfileManager.exe action userNameOrSID [printTy
      DeleteProfile userNameOrSID
      DeleteInvalidProfiles
      DeleteTemporaryProfiles
-  *printType [optional]:* indicates how to print the result (List | Formatted)
-
+  printType [optional]: indicates how to print the result (List | Formatted)
+==============================================================================
+```
 
 Below are described what exactly each action performs:
 - *GetUser:* search for user on local machine and active directory domain
