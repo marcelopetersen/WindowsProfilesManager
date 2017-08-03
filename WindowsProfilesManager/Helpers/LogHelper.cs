@@ -4,7 +4,7 @@ using log4net.Appender;
 
 namespace WindowsProfilesManager
 {
-    public class LoggingHelper
+    public class LogHelper
     {
         private static readonly ILog windowsProfilesManagerLogger = LogManager.GetLogger("WindowsProfilesManager");
 

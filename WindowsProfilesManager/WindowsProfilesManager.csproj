@@ -56,10 +56,10 @@
     <Compile Include="Helpers\ConsoleHelper.cs" />
     <Compile Include="Helpers\DictionaryExtensions.cs" />
     <Compile Include="Helpers\IIsHelper.cs" />
-    <Compile Include="Helpers\LoggingHelper.cs" />
     <Compile Include="Entities\UserInfo.cs" />
     <Compile Include="Entities\UserProfileInfo.cs" />
     <Compile Include="Entities\ProfilesManager.cs" />
+    <Compile Include="Helpers\LogHelper.cs" />
     <Compile Include="Helpers\StringExtensions.cs" />
     <Compile Include="Helpers\UserProfileHelper.cs" />
     <Compile Include="Program.cs" />

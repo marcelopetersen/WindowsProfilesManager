@@ -77,11 +77,9 @@ namespace WindowsProfilesManager.Entities
                 // Get user
                 UserInfo user = GetUser(userNameOrSID);
 
-                // User not found, create a empty one
+                // User not found, create an empty one
                 if (user == null)
                 {
-                    user = UserInfo.CreateToUserNotFound(userNameOrSID, identityType);
-
                     // Find profile locally
                     userProfileInfo = (identityType == IdentityType.Sid ?
                                                        FindLocalProfileBySID(userNameOrSID) :
@@ -254,7 +252,7 @@ namespace WindowsProfilesManager.Entities
                 if (profilesRootKey != null)
                     profilesRootKey.DeleteSubKeyTree(userTemporaryKeyName);
             }
-            catch
+            catch (Exception ex)
             {
                 // Nothing to do
             }

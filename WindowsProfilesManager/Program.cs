@@ -8,10 +8,14 @@ namespace WindowsProfilesManager
 {
     class Program
     {
+        // Internal fields
         private static Dictionary<string, object> parameters;
         private static ProfilesManager profilesMgr = new ProfilesManager();
-
-
+        
+        /// <summary>
+        /// Program main entry point
+        /// </summary>
+        /// <param name="args"></param>
         static void Main(string[] args)
         {
             // Parsing command line parameters
@@ -95,28 +99,19 @@ namespace WindowsProfilesManager
         {
             // Find user to determine SID
             string userName = parameters.GetValue<string>("userName");
-            var user = profilesMgr.GetUser(userName);
 
-            if (user != null)
+            // Finding user profile looking for profile settings
+            var profile = profilesMgr.GetProfile(userName);
+
+            if (profile == null)
             {
-                profilesMgr.DeleteUserProfile(user.SID);
-                ConsoleHelper.PrintSuccessMessageWithSurrondedSpaces("Profile deleted successfully !!!");
+                ConsoleHelper.PrintErrorMessageWithSurrondedSpaces("Profile not found of user [{0}].", userName);
+                return;
             }
             else
             {
-                // Finding user profile looking for profile settings
-                var profile = profilesMgr.GetProfile(userName);
-
-                if (profile == null)
-                {
-                    ConsoleHelper.PrintErrorMessageWithSurrondedSpaces("Profile not found to user [{0}].", userName);
-                    return;
-                }
-                else
-                {
-                    profilesMgr.DeleteUserProfile(user.SID);
-                    ConsoleHelper.PrintSuccessMessageWithSurrondedSpaces("Profile deleted successfully !!!");
-                }
+                profilesMgr.DeleteUserProfile(profile.User.SID);
+                ConsoleHelper.PrintSuccessMessageWithSurrondedSpaces("Profile deleted successfully !!!");
             }
         }
 
@@ -142,6 +137,12 @@ namespace WindowsProfilesManager
             PrintType printType = parameters.GetValue<PrintType>("printType");
             List<UserProfileInfo> profilesList = profilesMgr.GetTemporaryProfilesList();
 
+            if (profilesList == null || profilesList.Count == 0)
+            {
+                ConsoleHelper.PrintErrorMessageWithSurrondedSpaces("No temporary profiles found !!!");
+                return;
+            }
+
             foreach (UserProfileInfo profile in profilesList.OrderBy(p => p.User.Enabled).ThenBy(p => p.User.Name))
             {
                 ConsoleHelper.PrintUserProfileInfo(profile, printType);
@@ -153,7 +154,13 @@ namespace WindowsProfilesManager
         /// </summary>
         private static void DeleteTemporaryProfilesAction()
         {
-            var temporaryProfiles = profilesMgr.GetTemporaryProfilesList();
+            List<UserProfileInfo> temporaryProfiles = profilesMgr.GetTemporaryProfilesList();
+
+            if (temporaryProfiles == null || temporaryProfiles.Count == 0)
+            {
+                ConsoleHelper.PrintErrorMessageWithSurrondedSpaces("No temporary profiles found !!!");
+                return;
+            }
 
             ConsoleHelper.PrintSuccessMessageWithSurrondedSpaces("Temporary profiles found: {0}", temporaryProfiles.Count());
 
@@ -170,18 +177,18 @@ namespace WindowsProfilesManager
         private static void ListInvalidProfilesAction()
         {
             PrintType printType = parameters.GetValue<PrintType>("printType");
-            List<UserProfileInfo> profilesList = profilesMgr.GetInvalidProfilesList();            
+            List<UserProfileInfo> invalidProfilesList = profilesMgr.GetInvalidProfilesList();
 
-            if (profilesList == null || profilesList.Count() == 0)
+            if (invalidProfilesList == null || invalidProfilesList.Count() == 0)
             {
                 ConsoleHelper.PrintErrorMessageWithSurrondedSpaces("No invalid profiles found!");
                 return;
             }
 
             // Print profiles
-            ConsoleHelper.PrintErrorMessageWithSurrondedSpaces("Profiles found: {0}", profilesList.Count());
+            ConsoleHelper.PrintErrorMessageWithSurrondedSpaces("Profiles found: {0}", invalidProfilesList.Count());
 
-            foreach (UserProfileInfo profile in profilesList)
+            foreach (UserProfileInfo profile in invalidProfilesList)
             {
                 ConsoleHelper.PrintUserProfileInfo(profile, printType);
             }
@@ -192,11 +199,17 @@ namespace WindowsProfilesManager
         /// </summary>
         private static void DeleteInvalidProfilesAction()
         {
-            var invalidProfiles = profilesMgr.GetInvalidProfilesList();
+            List<UserProfileInfo> invalidProfilesList = profilesMgr.GetInvalidProfilesList();
 
-            ConsoleHelper.PrintSuccessMessageWithSurrondedSpaces("Invalid profiles found: {0}", invalidProfiles.Count());
+            if (invalidProfilesList == null || invalidProfilesList.Count() == 0)
+            {
+                ConsoleHelper.PrintErrorMessageWithSurrondedSpaces("No invalid profiles found!");
+                return;
+            }
 
-            foreach (var profile in invalidProfiles)
+            ConsoleHelper.PrintSuccessMessageWithSurrondedSpaces("Invalid profiles found: {0}", invalidProfilesList.Count());
+
+            foreach (var profile in invalidProfilesList)
             {
                 profilesMgr.DeleteUserProfile(profile.User.SID);
                 ConsoleHelper.PrintSuccessMessage("Profile [{0}] deleted successfully !!!", profile.User.SID);
@@ -208,6 +221,8 @@ namespace WindowsProfilesManager
         /// </summary>
         private static void ListInvalidIIsProfilesAction()
         {
+            throw new NotImplementedException();
+
             List<UserProfileInfo> profilesToRemove = new List<UserProfileInfo>();
             List<UserProfileInfo> profilesList = profilesMgr.GetProfilesList();
             List<string> applicationPoolIdentities = IIsHelper.GetApplicationPoolsIdentities();
@@ -220,7 +235,9 @@ namespace WindowsProfilesManager
             }
 
             foreach (var item in profilesToRemove)
+            {
                 ConsoleHelper.PrintUserProfileInfo(item, printType);
+            }
         }
     }
 }
