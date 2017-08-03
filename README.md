@@ -65,8 +65,8 @@ Below are described what exactly each action performs:
 
 
 ## License
-You this program by your own responsibility !!!
-You can make changes and use it for what you want and with no restrictions !!!
+Use this program/code by your own responsibility !!!
+You can make changes and use it for whatever you want, and with no restrictions !!!
 
 Enjoy yourself ...
 
